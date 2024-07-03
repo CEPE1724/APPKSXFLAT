@@ -1,24 +1,28 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FlatsScreen } from "../screens/FlatsScreen";
-import { LoginScreen } from "../screens/LoginScreen";
-import { UserScreen } from "../screens/UserScreen";
-import { Icon } from "react-native-elements";
-import React from "react";
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { FlatsStack } from '../navigation/FlatsStack';
+import { LoginScreen } from '../screens/LoginScreen';
+import { AccountStack } from '../navigation/UserStack';
+import {screen} from '../utils';
+import {SignUpScreen} from "../screens/SingUpScreen";
+import { Icon } from 'react-native-elements';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-export function AppNavigation() {
+function MainTabs() {
     return (
-        <Tab.Navigator screenOptions={({ route }) => ({
-            tabBarAccessibilityLabel: "#00a680",
-            tabBarActiveTintColor: "#00a680",
-            tabBarIcon: ({ color, size }) =>
-                screenOptions(route, color, size)
-        })}
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                headerShown: false, 
+                tabBarActiveTintColor: '#00a680',
+                tabBarIcon: ({ color, size }) => screenOptions(route, color, size),
+            })}
         >
-            <Tab.Screen name="Flats" component={FlatsScreen} />
-            <Tab.Screen name="Login" component={LoginScreen} />
-            <Tab.Screen name="User" component={UserScreen} />
+            <Tab.Screen name={screen.flat.tab} component={FlatsStack} />
+            <Tab.Screen name={screen.user.tab} component={AccountStack  } />
         </Tab.Navigator>
     );
 }
@@ -26,24 +30,36 @@ export function AppNavigation() {
 function screenOptions(route, color, size) {
     let iconName;
 
-    if (route.name === "Flats") {
-        iconName = "home-outline";
+    if (route.name === screen.flat.tab) {
+        iconName = 'home-outline';
     }
 
-    if (route.name === "Login") {
-        iconName = "account";
+    if (route.name === screen.user.tab) {
+        iconName = 'account';
     }
 
-    if (route.name === "User") {
-        iconName = "account";
-    }
+    return <Icon type="material-community" name={iconName} color={color} size={size} />;
+}
+
+export function AppNavigation() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     return (
-        <Icon
-            type="material-community"
-            name={iconName}
-            color={color}
-            size={size}
-        />
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                {isLoggedIn ? (
+                    <Stack.Screen name="MainTabs" component={MainTabs} />
+                ) : (
+                    <>
+                    <Stack.Screen name="Login">
+                        {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+                    </Stack.Screen>
+                    <Stack.Screen name="SignUp">
+                        {(props) => <SignUpScreen {...props} />}
+                    </Stack.Screen>
+                    </>
+                )}
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
