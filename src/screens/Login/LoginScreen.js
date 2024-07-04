@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, TouchableOpacity } from 'react-native';
-import { API_URLS } from '../config/apiConfig';
+import { API_URLS } from '../../config/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { styles } from './LoginScreen.style';
 export function LoginScreen({ navigation, setIsLoggedIn }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -57,15 +57,15 @@ export function LoginScreen({ navigation, setIsLoggedIn }) {
 
     return (
         <ImageBackground
-            source={require('../../assets/LoginS.png')} // Reemplaza con tu imagen de fondo
+            source={require('../../../assets/LoginS.png')} // Reemplaza con tu imagen de fondo
             style={styles.background}
         >
             <View style={styles.container}>
                 <Image 
-                    source={require('../../assets/favicon.png')}  // Reemplaza con la URL de tu imagen de logo
+                    source={require('../../../assets/favicon.png')}  // Reemplaza con la URL de tu imagen de logo
                     style={styles.logo}
                 />
-                <Text style={styles.title}>Ingresa con tus credenciales</Text>
+                <Text style={styles.title}>Login</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
@@ -94,58 +94,3 @@ export function LoginScreen({ navigation, setIsLoggedIn }) {
     );
 }
 
-const styles = StyleSheet.create({
-    background: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    container: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo semitransparente
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    logo: {
-        width: 100, // Ajusta el ancho según la relación de aspecto de tu logo
-        height: 100, // Ajusta la altura según la relación de aspecto de tu logo
-        marginBottom: 20,
-    },
-    title: {
-        fontSize: 14,
-        marginBottom: 20,
-        textAlign: 'center',
-        fontStyle: 'italic',
-        color: '#fff',
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 20,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        width: '100%',
-    },
-    successText: {
-        color: 'green',
-        fontSize: 14,
-        marginTop: 10,
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 14,
-        marginTop: 10,
-    },
-    forgotPasswordText: {
-        color: '#91a150',
-        fontSize: 14,
-        marginTop: 10,
-    },
-    signUpText: {
-        color: '#99a680',
-        fontSize: 14,
-        marginTop: 10,
-    },
-});

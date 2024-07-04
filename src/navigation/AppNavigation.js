@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FlatsStack } from '../navigation/FlatsStack';
-import { LoginScreen } from '../screens/LoginScreen';
+import { LoginScreen } from '../screens/Login';
 import { AccountStack } from '../navigation/UserStack';
 import {screen} from '../utils';
 import {SignUpScreen} from "../screens/SingUpScreen";

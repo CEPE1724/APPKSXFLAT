@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { screen } from "../utils";
 import { MenuScreen } from "../screens/MenuScreen"; // Asegúrate de que la ruta sea correcta
-import { FlatsScreen } from "../screens/FlatsScreen"; // Asegúrate de que la ruta sea correcta
+import { FlatsScreen } from "../screens/Flats"; // Asegúrate de que la ruta sea correcta
 import { ListFlats } from "../screens/ListFlats"; // Asegúrate de que la ruta sea correcta
 const Stack = createNativeStackNavigator();
 

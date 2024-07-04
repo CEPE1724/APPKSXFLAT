@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { styles } from './UserScreen.style'; // Asegúrate de importar los estilos adecuados
 
 export function UserScreen({ route }) {
     if (!route || !route.params || !route.params.type) {
@@ -11,6 +12,7 @@ export function UserScreen({ route }) {
             </View>
         );
     }
+
     const currentDate = new Date().toISOString().split('T')[0];
     const maxBirthDate = '2003-12-31'; // Define el máximo permitido para la fecha de nacimiento
     const minBirthDate = '1920-01-01'; // Define el mínimo permitido para la fecha de nacimiento
@@ -61,6 +63,13 @@ export function UserScreen({ route }) {
         return regex.test(email);
     };
 
+    // Función para abrir el selector de fecha
+    const handleDatePress = () => {
+        // Aquí puedes abrir un selector de fecha (puedes usar librerías como DateTimePicker)
+        // Para este ejemplo, abrimos un diálogo sencillo simulado
+        alert('Open date picker here');
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.container}>
@@ -95,7 +104,7 @@ export function UserScreen({ route }) {
                         editable={true} // Aquí ajusta según la lógica de tu aplicación
                     />
                 </View>
-                <TouchableOpacity onPress={() => {}} style={styles.inputContainer}>
+                <TouchableOpacity onPress={handleDatePress} style={styles.inputContainer}>
                     <FontAwesome name="calendar" size={24} color="#333" style={styles.icon} />
                     <Text style={styles.datePickerText}>{user.birthDate}</Text>
                 </TouchableOpacity>
@@ -150,86 +159,4 @@ export function UserScreen({ route }) {
     );
 }
 
-const styles = StyleSheet.create({
-    scrollView: {
-        flexGrow: 1,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#f0f0f0',
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        paddingHorizontal: 10,
-    },
-    icon: {
-        marginRight: 10,
-    },
-    input: {
-        flex: 1,
-        height: 40,
-        fontSize: 16,
-        color: '#333',
-    },
-    datePickerText: {
-        fontSize: 16,
-        color: '#333',
-        marginLeft: 10,
-    },
-    submitButton: {
-        backgroundColor: '#007BFF',
-        paddingVertical: 12,
-        paddingHorizontal: 50,
-        borderRadius: 5,
-        marginTop: 20,
-    },
-    submitButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-    errorContainer: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#ffcccc',
-        borderRadius: 5,
-    },
-    errorText: {
-        color: 'red',
-    },
-    dialogContainer: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        marginTop: 20,
-        alignItems: 'center',
-    },
-    dialogText: {
-        fontSize: 18,
-        marginBottom: 10,
-    },
-    dialogButton: {
-        backgroundColor: '#007BFF',
-        paddingVertical: 12,
-        paddingHorizontal: 50,
-        borderRadius: 5,
-        marginTop: 10,
-    },
-    dialogButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-});
 
-export default UserScreen;

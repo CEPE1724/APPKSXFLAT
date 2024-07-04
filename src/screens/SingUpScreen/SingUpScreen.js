@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ImageBackground, Image, TouchableOpacity, Modal } from 'react-native';
 import axios from 'axios';
-import { API_URLS } from "../config/apiConfig";
-import InputCodigo from '../component/InputCodigo'; // Asegúrate de ajustar la ruta de importación según tu estructura de archivos
+import { API_URLS } from "../../config/apiConfig";
+import InputCodigo from '../../component/InputCodigo'; // Asegúrate de ajustar la ruta de importación según tu estructura de archivos
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { styles } from './SingUpScreen.style';
 export function SignUpScreen({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -111,12 +111,12 @@ export function SignUpScreen({ navigation }) {
 
     return (
         <ImageBackground
-            source={require('../../assets/LoginS.png')} // Reemplaza con tu imagen de fondo
+            source={require('../../../assets/LoginS.png')} // Reemplaza con tu imagen de fondo
             style={styles.background}
         >
             <View style={styles.container}>
                 <Image
-                    source={require('../../assets/favicon.png')}  // Reemplaza con tu imagen de logo
+                    source={require('../../../assets/favicon.png')}  // Reemplaza con tu imagen de logo
                     style={styles.logo}
                 />
                 <Text style={styles.title}>Regístrate con tus credenciales</Text>
@@ -186,86 +186,3 @@ export function SignUpScreen({ navigation }) {
         </ImageBackground>
     );
 }
-
-const styles = StyleSheet.create({
-    background: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    container: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo semi-transparente
-        borderRadius: 10,
-        alignItems: 'center',
-    },
-    logo: {
-        width: 100,
-        height: 100,
-        marginBottom: 20,
-    },
-    title: {
-        fontSize: 14,
-        marginBottom: 20,
-        textAlign: 'center',
-        fontStyle: 'italic',
-        color: '#fff',
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 20,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        width: '100%',
-    },
-    inputPassword: {
-        flex: 1,
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-    },
-    passwordContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        width: '100%',
-        position: 'relative',
-    },
-    loginText: {
-        color: '#91a150',
-        fontSize: 14,
-        marginTop: 10,
-    },
-    errorText: {
-        color: 'red',
-        marginBottom: 10,
-    },
-    toggleButton: {
-        position: 'absolute',
-        top: 0,
-        right: 10,
-        zIndex: 1,
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    containerModal: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 2,
-    },
-});
-
-export default SignUpScreen;

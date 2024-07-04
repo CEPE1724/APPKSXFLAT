@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URLS } from '../config/apiConfig';
-
+import { API_URLS } from '../../config/apiConfig';
+import { styles } from './FlatsScreen.style';
 export function FlatsScreen({ route }) {
   const { userId } = route.params;
   console.log('userId', userId);
@@ -237,60 +237,3 @@ export function FlatsScreen({ route }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#f8f9fa',
-    flexGrow: 1,
-  },
-  inputGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#dee2e6',
-    borderRadius: 8,
-    padding: 7,
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  icon: {
-    marginRight: 10,
-    color: '#6c757d',
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: '#495057',
-  },
-  switchGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#dee2e6',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  error: {
-    color: '#e63946',
-    marginBottom: 20,
-    fontSize: 16,
-  },
-  loadingIndicator: {
-    marginTop: 20,
-  },
-});
-

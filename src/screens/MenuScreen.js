@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { screen } from "../utils"; // Asegúrate de que la ruta sea correcta
 import { useNavigation } from '@react-navigation/native';
+import { FontAwesome } from "@expo/vector-icons"; // Importa FontAwesome desde @expo/vector-icons
 
 export function MenuScreen() {
     const navigation = useNavigation();
@@ -10,12 +11,15 @@ export function MenuScreen() {
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.header}>Menú de Usuario</Text>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(screen.flat.flats)}>
+                <FontAwesome name="list-alt" size={24} color="white" style={styles.icon} />
                 <Text style={styles.buttonText}>Opción 1</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(screen.flat.listflats)}>
+                <FontAwesome name="building" size={24} color="white" style={styles.icon} />
                 <Text style={styles.buttonText}>Opción 2</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(screen.flat.flats)}>
+                <FontAwesome name="cog" size={24} color="white" style={styles.icon} />
                 <Text style={styles.buttonText}>Opción 3</Text>
             </TouchableOpacity>
         </ScrollView>
@@ -25,10 +29,8 @@ export function MenuScreen() {
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#f0f0f0',
+        padding: 30,
+        backgroundColor: '#f0f0f0', // Fondo gris claro
     },
     header: {
         fontSize: 24,
@@ -36,10 +38,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     button: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         width: '100%',
-        padding: 15,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
         marginVertical: 10,
-        backgroundColor: '#6200ea',
+        backgroundColor: '#6200ea', // Fondo morado
         borderRadius: 8,
         shadowColor: '#000',
         shadowOffset: {
@@ -49,12 +55,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        alignItems: 'center',
     },
     buttonText: {
-        color: '#fff',
+        color: '#fff', // Texto blanco
         fontSize: 18,
+        marginLeft: 10,
+    },
+    icon: {
+        marginRight: 10,
     },
 });
 
-export default MenuScreen;
