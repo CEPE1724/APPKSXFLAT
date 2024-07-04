@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { API_URLS } from '../config/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URLS } from '../config/apiConfig';
 
-export function FlatsScreen() {
+export function FlatsScreen({ route }) {
+  const { userId } = route.params;
+  console.log('userId', userId);
   const [flats, setFlats] = useState({
     city: '',
     streetName: '',
@@ -13,25 +15,71 @@ export function FlatsScreen() {
     hasAc: false,
     yearBuilt: '',
     rentPrice: '',
-    dateAvailable: new Date().toISOString().slice(0, 10),
-    user: ''
+    dateAvailable: new Date().toISOString().slice(0, 10), // Formato ISO yyyy-mm-dd
+    user: userId || '' // Inicializar con userId si está disponible
   });
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        setFlats(prevFlats => ({ ...prevFlats, user: userId }));
+        if (!userId) {
+          const storedUserId = await AsyncStorage.getItem('userId');
+          
+          if (storedUserId) {
+            setFlats(prevFlats => ({ ...prevFlats, user: storedUserId }));
+          }
+        }
+
+        if (route.params.type === 'update') {
+          
+          setIsUpdate(true);
+          fetchFlatDetails(flats.user); // Pasar flats.user como userId
+        }
       } catch (error) {
         console.error('Error fetching user ID:', error);
       }
     };
 
     fetchUserId();
-  }, []);
+  }, [userId, route.params.type]);
+
+  const fetchFlatDetails = async (id) => {
+    setLoading(true);
+    console.log('id', id);
+    try {
+      const response = await fetch(API_URLS.getfindFullFlatById(id), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching flat details');
+      }
+      const data = await response.json();
+      setFlats({
+        city: data.city || '',
+        streetName: data.streetName || '',
+        streetNumber: data.streetNumber || '',
+        areaSize: data.areaSize || '',
+        hasAc: data.hasAc || false,
+        yearBuilt: data.yearBuilt || '',
+        rentPrice: data.rentPrice || '',
+        dateAvailable: data.dateAvailable ? new Date(data.dateAvailable).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+        user: data.user || flats.user
+      });
+      setError('');
+    } catch (error) {
+      console.error('Error fetching flat details:', error);
+      setError('Error fetching flat details');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -53,9 +101,13 @@ export function FlatsScreen() {
         setLoading(false);
         return;
       }
+       
+      const url = isUpdate ? `${API_URLS.putUpdateFlats(userId)}` : API_URLS.postCreateFlat;
+       const method = isUpdate ? 'PUT' : 'POST';
+     
 
-      const response = await fetch(API_URLS.postCreateFlat, {
-        method: 'POST',
+      const response = await fetch(url, {
+        method: method,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -69,19 +121,20 @@ export function FlatsScreen() {
         return;
       }
 
-      Alert.alert('Success', 'Flat created successfully');
-      setFlats({
-        city: '',
-        streetName: '',
-        streetNumber: '',
-        areaSize: '',
-        hasAc: false,
-        yearBuilt: '',
-        rentPrice: '',
-        dateAvailable: new Date().toISOString().slice(0, 10),
-        user: flats.user
-      });
-
+      Alert.alert('Success', `Flat ${isUpdate ? 'updated' : 'created'} successfully`);
+      if (!isUpdate) {
+        setFlats({
+          city: '',
+          streetName: '',
+          streetNumber: '',
+          areaSize: '',
+          hasAc: false,
+          yearBuilt: '',
+          rentPrice: '',
+          dateAvailable: new Date().toISOString().slice(0, 10),
+          user: flats.user
+        });
+      }
       setError('');
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -241,4 +294,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FlatsScreen;

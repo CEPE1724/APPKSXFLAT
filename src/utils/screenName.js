@@ -3,6 +3,7 @@ const flatStack = {
     menuflats: "MenuFlats",
     flats: "Flats",
     listflats: "ListFlats",
+    updateflats: "UpdateFlats",
 
 }
 

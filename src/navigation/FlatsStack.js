@@ -18,11 +18,18 @@ export function FlatsStack() {
         name={screen.flat.flats}
         component={FlatsScreen}
         options={{ title: "Flats" }} // Aquí defines el título que debe mostrarse en la pantalla
+        initialParams={{ type: "create" }}
       />
       <Stack.Screen
         name={screen.flat.listflats}
         component={ListFlats}
         options={{ title: "Flats" }} // Aquí defines el título que debe mostrarse en la pantalla
+      />
+      <Stack.Screen
+        name={screen.flat.updateflats}
+        component={FlatsScreen}
+        options={{ title: "Flats" }} // Aquí defines el título que debe mostrarse en la pantalla
+        initialParams={{ type: "update", userId: ""}}
       />
 
     </Stack.Navigator>

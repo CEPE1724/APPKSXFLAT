@@ -12,8 +12,11 @@ import axios from "axios";
 import * as Animatable from "react-native-animatable";
 import { Card, Icon } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { useNavigation } from "@react-navigation/native";
+import { screen } from "../../utils";
+import { styles } from "./ListFlats.style";
 export function ListFlats() {
+  const navigation = useNavigation();
   const [flatsData, setFlatsData] = useState([]);
   const [favorites, setFavorites] = useState({});
   const [loading, setLoading] = useState(true);
@@ -68,7 +71,14 @@ export function ListFlats() {
           <Text style={styles.flatName}>Flat in {item.city}</Text>
           {userId === item.user._id && (
             <View style={styles.userIconContainer}>
-              <TouchableOpacity style={styles.userIcon}>
+              <TouchableOpacity
+                style={styles.userIcon}
+                onPress={() =>
+                  navigation.navigate(screen.flat.updateflats, {
+                    userId: item._id,
+                  })
+                }
+              >
                 <FontAwesome name="edit" size={24} color="green" />
               </TouchableOpacity>
             </View>
@@ -88,6 +98,7 @@ export function ListFlats() {
         <Text style={styles.flatDescription}>
           Street: {item.streetName}, {item.streetNumber}
         </Text>
+        
         <Text style={styles.flatDescription}>
           Rent Price: ${item.rentPrice}
         </Text>
@@ -101,7 +112,7 @@ export function ListFlats() {
         <Text style={styles.flatDescription}>
           User Email: {item.user.email}
         </Text>
-        <Text style={styles.flatDescription}>User ID: {item.user._id}</Text>
+      
         <View style={styles.iconContainer}>
           <Icon
             name="snowflake-o"
@@ -140,58 +151,3 @@ export function ListFlats() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: "#e0f7fa", // Fondo azul claro
-    borderRadius: 15, // Borde redondeado
-  },
-  flatContainer: {
-    marginBottom: 15,
-    borderRadius: 15, // Borde redondeado
-    overflow: "hidden", // Asegura que el contenido dentro del contenedor sea recortado por los bordes redondeados
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  flatName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#00796b", // Verde oscuro
-  },
-  flatDescription: {
-    fontSize: 16,
-    color: "#004d40", // Verde más oscuro
-    marginTop: 5,
-  },
-  heartIconContainer: {
-    padding: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 10,
-  },
-  iconText: {
-    marginLeft: 5,
-    fontSize: 14,
-    color: "#00796b", // Verde oscuro
-  },
-  userIconContainer: {
-    flexDirection: "row",
-    marginTop: 10,
-    justifyContent: "flex-end",
-  },
-  userIcon: {
-    marginLeft: 10,
-  },
-});
-
-export default ListFlats;
