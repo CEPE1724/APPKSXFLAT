@@ -1,4 +1,4 @@
-import React from "react";
+import React , { useEffect }from "react";
 import {
   View,
   Text,
@@ -12,7 +12,19 @@ import { FontAwesome } from "@expo/vector-icons"; // Importa FontAwesome desde @
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export function MenuScreen() {
   const navigation = useNavigation();
-  const storedUserId = AsyncStorage.getItem("userId");
+  let storedUserId = "";
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+         storedUserId = await AsyncStorage.getItem("userId");
+      } catch (error) {
+        console.error("Error fetching userId from AsyncStorage:", error.message);
+        // Manejo de errores
+      }
+    };
+
+    fetchUserId();
+  }, [navigation]); 
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

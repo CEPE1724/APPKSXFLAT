@@ -19,7 +19,7 @@ import { API_URLS } from "../../config/apiConfig";
 
 export function ListFlats({route}) {
   const { type, userId } = route.params;
-  console.log("userId", userId);
+ 
 
   const navigation = useNavigation();
   const [flatsData, setFlatsData] = useState([]);
@@ -45,7 +45,12 @@ export function ListFlats({route}) {
   useEffect(() => {
     const fetchFlatsData = async () => {
       try {
-        const response = await axios.get("http://192.168.100.152:3000/api/v1/flats", {
+      let Url = API_URLS.getTodosFlats;
+      let Url2 = API_URLS.getFavoriteFlatsTodos(userId);
+      if (type === "favo") {
+        Url = API_URLS.getFavoriteFlatsTodos(userId);
+      }
+        const response = await axios.get(Url, {
           timeout: 5000,
         });
         // Almacenar todos los flats en flatsData
@@ -71,10 +76,9 @@ export function ListFlats({route}) {
   useEffect(() => {
     const getFavoriteStatus = async (flatId, userIdSet) => {
       try {
-        console.log(API_URLS.getFavoriteFlats(flatId, userIdSet));
+       
         const response = await axios.get(API_URLS.getFavoriteFlats(flatId, userIdSet));
         if (response.data.search ==="ok") {
-          console.log("Favorite status:", response.data);
           setFavorites((prevFavorites) => ({
             ...prevFavorites,
             [flatId]: true, // Marcar como favorito si la respuesta es exitosa
@@ -118,7 +122,6 @@ export function ListFlats({route}) {
       }
 
       const data = await response.json();
-      console.log("Favorite flat added:", data);
     } catch (error) {
       console.error("Error adding favorite flat:", error.message);
     }
@@ -133,7 +136,7 @@ export function ListFlats({route}) {
             <View style={styles.userIconContainer}>
               <TouchableOpacity
                 style={styles.userIcon}
-                onPress={() => navigation.navigate(screen.flat.updateflats, { userIdSet: item._id })}
+                onPress={() => navigation.navigate(screen.flat.updateflats, { userId: item._id })}
               >
                 <FontAwesome name="edit" size={24} color="green" />
               </TouchableOpacity>

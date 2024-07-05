@@ -14,6 +14,8 @@ export const API_URLS = {
   putUpdateFlats: (id)=> `${API_BASE_URL}/flats/${id}`,
   postFavoriteFlats: `${API_BASE_URL}/favoriteFlats`,
   getFavoriteFlats: (idFlats, idUsuario) => `${API_BASE_URL}/favoriteFlats/${idFlats}/${idUsuario}`,
+  getTodosFlats: `${API_BASE_URL}/flats`,
+  getFavoriteFlatsTodos: (idUsuario) => `${API_BASE_URL}/favoriteFlats/${idUsuario}`,
   
 };
 
