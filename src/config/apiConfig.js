@@ -1,3 +1,5 @@
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 const API_BASE_URL = "http://192.168.100.152:3000/api/v1"; // Usa tu IP local en lugar de localhost
 //const API_BASE_URL = "http://172.16.30.159:3000/api/v1";
 export const API_URLS = {
@@ -10,4 +12,8 @@ export const API_URLS = {
   getfindFullFlatById: (id) => `${API_BASE_URL}/flats/${id}`,
   getFlats: `${API_BASE_URL}/flats`,
   putUpdateFlats: (id)=> `${API_BASE_URL}/flats/${id}`,
+  postFavoriteFlats: `${API_BASE_URL}/favoriteFlats`,
+  getFavoriteFlats: (idFlats, idUsuario) => `${API_BASE_URL}/favoriteFlats/${idFlats}/${idUsuario}`,
+  
 };
+

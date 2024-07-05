@@ -6,6 +6,7 @@ import { API_URLS } from '../../config/apiConfig';
 import { styles } from './FlatsScreen.style';
 export function FlatsScreen({ route }) {
   const { userId } = route.params;
+  
   console.log('userId', userId);
   const [flats, setFlats] = useState({
     city: '',
@@ -28,6 +29,7 @@ export function FlatsScreen({ route }) {
       try {
         if (!userId) {
           const storedUserId = await AsyncStorage.getItem('userId');
+          console.log('storedUserId', storedUserId);
           
           if (storedUserId) {
             setFlats(prevFlats => ({ ...prevFlats, user: storedUserId }));

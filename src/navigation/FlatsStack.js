@@ -24,6 +24,7 @@ export function FlatsStack() {
         name={screen.flat.listflats}
         component={ListFlats}
         options={{ title: "Flats" }} // Aquí defines el título que debe mostrarse en la pantalla
+        initialParams={{ type: "list", userId: ""}}
       />
       <Stack.Screen
         name={screen.flat.updateflats}
@@ -31,6 +32,13 @@ export function FlatsStack() {
         options={{ title: "Flats" }} // Aquí defines el título que debe mostrarse en la pantalla
         initialParams={{ type: "update", userId: ""}}
       />
+      <Stack.Screen
+        name={screen.flat.favoriteflats}
+        component={ListFlats}
+        options={{ title: "Favorite Flats" }} // Aquí defines el título que debe mostrarse en la pantalla
+        initialParams={{ type: "favo", userId: ""}}
+      />
+
 
     </Stack.Navigator>
   );

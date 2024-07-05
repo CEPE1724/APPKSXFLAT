@@ -4,6 +4,7 @@ const flatStack = {
     flats: "Flats",
     listflats: "ListFlats",
     updateflats: "UpdateFlats",
+    favoriteflats: "FavoriteFlats",
 
 }
 
