@@ -16,6 +16,9 @@ export const API_URLS = {
   getFavoriteFlats: (idFlats, idUsuario) => `${API_BASE_URL}/favoriteFlats/${idFlats}/${idUsuario}`,
   getTodosFlats: `${API_BASE_URL}/flats`,
   getFavoriteFlatsTodos: (idUsuario) => `${API_BASE_URL}/favoriteFlats/${idUsuario}`,
-  
+  putMessage: `${API_BASE_URL}/messages`,
+  getFindUserID: (id) => `${API_BASE_URL}/users/${id}`,
+  postCrearUsuario:(id) => `${API_BASE_URL}/users/${id}`,
 };
 
+//renders-landors-

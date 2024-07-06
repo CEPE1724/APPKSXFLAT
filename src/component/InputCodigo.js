@@ -78,6 +78,7 @@ const InputCodigo = ({ navigation, onClose, email, password }) => {
     const getValCodigo = async (email, codigo) => {
         try {
             const url = API_URLS.getValCodigo(email, codigo);
+            console.log('url', url);
             const response = await axios.get(url);
             return response;
         } catch (error) {

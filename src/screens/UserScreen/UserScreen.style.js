@@ -1,11 +1,13 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-   
     container: {
         flex: 1,
         padding: 20,
         backgroundColor: '#f0f0f0', // Fondo gris claro
+    },
+    scrollView: {
+        flexGrow: 1,
     },
     inputContainer: {
         flexDirection: 'row',
@@ -91,5 +93,36 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
+    optionsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 20,
+    },
+    optionButton: {
+        backgroundColor: '#007BFF', // Azul
+        paddingVertical: 12,
+        paddingHorizontal: 50,
+        borderRadius: 8,
+    },
+    optionButtonText: {
+        color: '#fff', // Texto blanco
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    selectedOption: {
+        backgroundColor: '#0056b3', // Azul oscuro cuando seleccionado
+    },
+    togglePasswordButton: {
+        backgroundColor: '#6c757d', // Gris oscuro
+        paddingVertical: 12,
+        paddingHorizontal: 50,
+        borderRadius: 8,
+        marginTop: 20,
+        alignSelf: 'center', // Alineado al centro horizontalmente
+    },
+    togglePasswordButtonText: {
+        color: '#fff', // Texto blanco
+        fontSize: 16,
+        textAlign: 'center',
+    },
 });
-

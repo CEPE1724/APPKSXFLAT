@@ -10,7 +10,7 @@ import { screen } from "../utils"; // Asegúrate de que la ruta sea correcta
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons"; // Importa FontAwesome desde @expo/vector-icons
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export function MenuScreen() {
+export function MenuUser() {
   const navigation = useNavigation();
   let storedUserId = "";
   useEffect(() => {
@@ -28,10 +28,9 @@ export function MenuScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-    
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate(screen.flat.flats)}
+        onPress={() => navigation.navigate(screen.user.accounts,{ type: "edit", userId: storedUserId})}
       >
         <FontAwesome
           name="list-alt"
@@ -39,19 +38,19 @@ export function MenuScreen() {
           color="white"
           style={styles.icon}
         />
-        <Text style={styles.buttonText}>Edit</Text>
+        <Text style={styles.buttonText}>Update</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate(screen.flat.listflats)}
+        onPress={() => navigation.navigate(screen.user.accounts, { type: "list", userId: ""})}
       >
         <FontAwesome
-          name="building"
+          name="list"
           size={24}
           color="white"
           style={styles.icon}
         />
-        <Text style={styles.buttonText}>Flats</Text>
+        <Text style={styles.buttonText}>Usuarios</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
@@ -59,8 +58,8 @@ export function MenuScreen() {
           navigation.navigate(screen.flat.favoriteflats, { type: "favo", userId: storedUserId})
         }
       >
-        <FontAwesome name="cog" size={24} color="white" style={styles.icon} />
-        <Text style={styles.buttonText}>Favoritos</Text>
+        <FontAwesome name="user" size={24} color="white" style={styles.icon} />
+        <Text style={styles.buttonText}>Salir</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     marginVertical: 10,
-    backgroundColor: "#6200ea", // Fondo morado
+    backgroundColor: "#5255ea", // Fondo morado
     borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: {

@@ -22,7 +22,7 @@ function MainTabs() {
             })}
         >
             <Tab.Screen name={screen.flat.tab} component={FlatsStack} />
-            <Tab.Screen name={screen.user.tab} component={AccountStack  } />
+            <Tab.Screen name={screen.user.tab} component={AccountStack} />
         </Tab.Navigator>
     );
 }

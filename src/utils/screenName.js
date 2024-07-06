@@ -10,7 +10,8 @@ const flatStack = {
 
 const UserStack = {
     tab: "UserTab",
-    accounts: "Account",
+     menu: "Usuarios",
+     accounts: "Account",
 }
 
 export const screen = {
