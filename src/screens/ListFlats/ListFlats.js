@@ -7,6 +7,7 @@ import {
   FlatList,
   ActivityIndicator,
   Modal,
+  Linking, // Importa Linking para abrir URLs externas
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import axios from "axios";
@@ -147,6 +148,24 @@ export function ListFlats({ route }) {
     setModalVisible(true);
   };
 
+ 
+
+const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
+  const message = `Check out this flat in ${city} at ${streetName}, ${streetNumber}! Contact: ${email}`;
+  const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
+
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        console.log("WhatsApp is not installed");
+      } else {
+        return Linking.openURL(url);
+      }
+    })
+    .catch((error) => console.error("Error opening WhatsApp:", error));
+};
+
+
   const renderFlat = ({ item }) => (
     <Animatable.View
       animation="fadeInUp"
@@ -155,7 +174,7 @@ export function ListFlats({ route }) {
     >
       <Card>
         <View style={styles.headerContainer}>
-          <Text style={styles.flatName}>Flat in {item.city}</Text>
+          <Text style={styles.flatName}>{item.city}</Text>
           {userIdSet === item.user._id && (
             <View style={styles.userIconContainer}>
               <TouchableOpacity
@@ -179,6 +198,12 @@ export function ListFlats({ route }) {
               size={24}
               color={favorites[item._id] ? "red" : "black"}
             />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => shareViaWhatsApp(item.user.email, item.city, item.streetName, item.streetNumber)}
+            style={styles.whatsappIconContainer}
+          >
+            <FontAwesome name="whatsapp" size={24} color="green" />
           </TouchableOpacity>
         </View>
         <Card.Divider />

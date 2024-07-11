@@ -20,6 +20,7 @@ export const API_URLS = {
   getFindUserID: (id) => `${API_BASE_URL}/users/${id}`,
   postCrearUsuario:(id) => `${API_BASE_URL}/users/${id}`,
   getAllProvincia: `${API_BASE_URL}/provincias`,
+  getAllCanton: (idProvincia) => `${API_BASE_URL}/cantones/${idProvincia}`,
 };
 
 //renders-landors-

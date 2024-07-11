@@ -15,13 +15,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_URLS } from "../../config/apiConfig";
 import { styles } from "./FlatsScreen.style";
 import Theme from "../../component/themes";
-
+import { MapForm } from "../Flats/MapForm";
 export function FlatsScreen({ route }) {
   const { userId } = route.params;
+  const [showMap, setshowMap] = useState(false);
 
-  console.log("userId", userId);
   const [flats, setFlats] = useState({
     city: "",
+    canton: "",
     streetName: "",
     streetNumber: "",
     areaSize: "",
@@ -36,62 +37,102 @@ export function FlatsScreen({ route }) {
   const [loading, setLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [provincias, setProvincias] = useState([]);
+  const [canton, setCanton] = useState([]);
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        if (!userId) {
-          const storedUserId = await AsyncStorage.getItem("userId");
-          if (storedUserId) {
-            setFlats((prevFlats) => ({ ...prevFlats, user: storedUserId }));
-          }
-        }
+  const onOpenCloseMap = () => setshowMap((prev) => !prev);
 
-        if (route.params.type === "update") {
-          setIsUpdate(true);
-          fetchFlatDetails(flats.user);
+  // Función para obtener el ID del usuario almacenado o del parámetro de ruta
+  const fetchUserId = async () => {
+    try {
+      if (!userId) {
+        const storedUserId = await AsyncStorage.getItem("userId");
+        if (storedUserId) {
+          setFlats((prevFlats) => ({ ...prevFlats, user: storedUserId }));
         }
-      } catch (error) {
-        console.error("Error fetching user ID:", error);
       }
-    };
 
-    const fetchProvincias = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(API_URLS.getAllProvincia, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Error fetching provinces");
-        }
-
-        const data = await response.json();
-        const mappedProvincias = data.map((item) => ({
-          label: item.provincia,
-          value: item.provincia,
-        }));
-        console.log("mappedProvincias", mappedProvincias);
-        setProvincias(mappedProvincias);
-      } catch (error) {
-        console.error("Error fetching provinces:", error);
-        setError("Error fetching provinces");
-      } finally {
-        setLoading(false);
+      if (route.params.type === "update") {
+        setIsUpdate(true);
+        fetchFlatDetails(flats.user);
       }
-    };
-
-    fetchUserId();
-    fetchProvincias();
-  }, [userId, route.params.type]);
-
-  const handleProvinceChange = (value) => {
-    setFlats({ ...flats, city: value });
+    } catch (error) {
+      console.error("Error fetching user ID:", error);
+    }
   };
 
+  // Función para obtener la lista de provincias desde la API
+  const fetchProvincias = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(API_URLS.getAllProvincia, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error fetching provinces");
+      }
+
+      const data = await response.json();
+      const mappedProvincias = data.map((item) => ({
+        id: item.idProvincia, // Asegúrate de tener un campo `id` en tu objeto de provincia
+        label: item.provincia,
+        value: item.provincia,
+      }));
+      setProvincias(mappedProvincias);
+    } catch (error) {
+      console.error("Error fetching provinces:", error);
+      setError("Error fetching provinces");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para obtener la lista de cantones según el ID de la provincia seleccionada
+  const fetchCanton = async (idProvincia) => {
+    setLoading(true);
+    try {
+      console.log(API_URLS.getAllCanton(idProvincia));
+      const response = await fetch(API_URLS.getAllCanton(idProvincia), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error fetching canton");
+      }
+
+      const data = await response.json();
+      const mappedCanton = data.map((item) => ({
+        label: item.nombre,
+        value: item.nombre,
+      }));
+      setCanton(mappedCanton);
+    } catch (error) {
+      console.error("Error fetching canton:", error);
+      setError("Error fetching canton");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para manejar el cambio de provincia en el Picker
+  const handleProvinceChange = (value) => {
+    const selectedProvince = provincias.find((province) => province.value === value);
+    if (selectedProvince) {
+      setFlats({ ...flats, city: value });
+      fetchCanton(selectedProvince.id); // Llama a fetchCanton con el ID de la provincia seleccionada
+    }
+  };
+
+  // Función para manejar el cambio de cantón en el Picker
+  const handleCantonChange = (value) => {
+    setFlats({ ...flats, canton: value });
+  };
+
+  // Función para obtener los detalles del apartamento para actualizar
   const fetchFlatDetails = async (id) => {
     setLoading(true);
     try {
@@ -107,6 +148,7 @@ export function FlatsScreen({ route }) {
       const data = await response.json();
       setFlats({
         city: data.city || "",
+        canton: data.canton || "",
         streetName: data.streetName || "",
         streetNumber: data.streetNumber || "",
         areaSize: data.areaSize || "",
@@ -127,12 +169,14 @@ export function FlatsScreen({ route }) {
     }
   };
 
+  // Función para manejar la presentación del formulario
   const handleSubmit = async () => {
     setLoading(true);
 
     try {
       const requiredFields = [
         { value: flats.city, label: "City" },
+        { value: flats.canton, label: "Canton"},
         { value: flats.streetName, label: "Street name" },
         { value: flats.streetNumber, label: "Street number" },
         { value: flats.areaSize, label: "Area size" },
@@ -175,6 +219,7 @@ export function FlatsScreen({ route }) {
       if (!isUpdate) {
         setFlats({
           city: "",
+          canton: "",
           streetName: "",
           streetNumber: "",
           areaSize: "",
@@ -194,7 +239,13 @@ export function FlatsScreen({ route }) {
     }
   };
 
+  useEffect(() => {
+    fetchUserId();
+    fetchProvincias();
+  }, [userId, route.params.type]);
+
   return (
+    <>
     <ScrollView contentContainerStyle={styles.container}>
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
@@ -221,12 +272,49 @@ export function FlatsScreen({ route }) {
       </View>
 
       <View style={styles.inputGroup}>
+        <Icon name="location-city" size={24} style={styles.icon} />
+        <Picker
+          selectedValue={flats.canton}
+          style={{
+            height: 40,
+            width: "100%",
+            backgroundColor: Theme.colors.background,
+            color: Theme.colors.text,
+          }}
+          onValueChange={(itemValue) => handleCantonChange(itemValue)}
+        >
+          {canton.map((item) => (
+            <Picker.Item
+              key={item.value}
+              label={item.label}
+              value={item.value}
+            />
+          ))}
+        </Picker>
+      </View>
+
+      <View style={styles.inputGroup}>
         <Icon name="add-road" size={24} style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Street name"
           value={flats.streetName}
           onChangeText={text => setFlats({ ...flats, streetName: text })}
+        />
+      </View>
+
+      <View style={styles.inputGroup}>
+        <Icon name="add-road" size={24} style={styles.icon}
+         onPress={onOpenCloseMap}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Localizaciòn"
+          value={flats.streetName}
+          onChangeText={text => setFlats({ ...flats, streetName: text })}
+        />
+        <Icon name="add-road" size={24} style={styles.icon}
+         onPress={onOpenCloseMap}
         />
       </View>
 
@@ -297,5 +385,7 @@ export function FlatsScreen({ route }) {
         <ActivityIndicator size="large" color="#0000ff" style={styles.loadingIndicator} />
       )}
     </ScrollView>
+    <MapForm show={showMap} close={onOpenCloseMap} />
+    </>
   );
 }

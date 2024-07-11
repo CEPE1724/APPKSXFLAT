@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
       backgroundColor: "#f8f9fa", // Fondo blanco
     },
     flatName: {
-      fontSize: 15,
+      fontSize: 10,
       fontWeight: "bold",
       color: "#00796b", // Verde oscuro
     },
