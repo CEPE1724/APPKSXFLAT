@@ -1,83 +1,127 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Switch, Button, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URLS } from '../../config/apiConfig';
-import { styles } from './FlatsScreen.style';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Switch,
+  Button,
+  ScrollView,
+  Alert,
+  ActivityIndicator
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URLS } from "../../config/apiConfig";
+import { styles } from "./FlatsScreen.style";
+import Theme from "../../component/themes";
+
 export function FlatsScreen({ route }) {
   const { userId } = route.params;
-  
-  console.log('userId', userId);
+
+  console.log("userId", userId);
   const [flats, setFlats] = useState({
-    city: '',
-    streetName: '',
-    streetNumber: '',
-    areaSize: '',
+    city: "",
+    streetName: "",
+    streetNumber: "",
+    areaSize: "",
     hasAc: false,
-    yearBuilt: '',
-    rentPrice: '',
-    dateAvailable: new Date().toISOString().slice(0, 10), // Formato ISO yyyy-mm-dd
-    user: userId || '' // Inicializar con userId si está disponible
+    yearBuilt: "",
+    rentPrice: "",
+    dateAvailable: new Date().toISOString().slice(0, 10),
+    user: userId || "",
   });
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [provincias, setProvincias] = useState([]);
 
   useEffect(() => {
     const fetchUserId = async () => {
       try {
         if (!userId) {
-          const storedUserId = await AsyncStorage.getItem('userId');
-          console.log('storedUserId', storedUserId);
-          
+          const storedUserId = await AsyncStorage.getItem("userId");
           if (storedUserId) {
-            setFlats(prevFlats => ({ ...prevFlats, user: storedUserId }));
+            setFlats((prevFlats) => ({ ...prevFlats, user: storedUserId }));
           }
         }
 
-        if (route.params.type === 'update') {
-          
+        if (route.params.type === "update") {
           setIsUpdate(true);
-          fetchFlatDetails(flats.user); // Pasar flats.user como userId
+          fetchFlatDetails(flats.user);
         }
       } catch (error) {
-        console.error('Error fetching user ID:', error);
+        console.error("Error fetching user ID:", error);
+      }
+    };
+
+    const fetchProvincias = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(API_URLS.getAllProvincia, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Error fetching provinces");
+        }
+
+        const data = await response.json();
+        const mappedProvincias = data.map((item) => ({
+          label: item.provincia,
+          value: item.provincia,
+        }));
+        console.log("mappedProvincias", mappedProvincias);
+        setProvincias(mappedProvincias);
+      } catch (error) {
+        console.error("Error fetching provinces:", error);
+        setError("Error fetching provinces");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserId();
+    fetchProvincias();
   }, [userId, route.params.type]);
+
+  const handleProvinceChange = (value) => {
+    setFlats({ ...flats, city: value });
+  };
 
   const fetchFlatDetails = async (id) => {
     setLoading(true);
-    console.log('id', id);
     try {
       const response = await fetch(API_URLS.getfindFullFlatById(id), {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
       if (!response.ok) {
-        throw new Error('Error fetching flat details');
+        throw new Error("Error fetching flat details");
       }
       const data = await response.json();
       setFlats({
-        city: data.city || '',
-        streetName: data.streetName || '',
-        streetNumber: data.streetNumber || '',
-        areaSize: data.areaSize || '',
+        city: data.city || "",
+        streetName: data.streetName || "",
+        streetNumber: data.streetNumber || "",
+        areaSize: data.areaSize || "",
         hasAc: data.hasAc || false,
-        yearBuilt: data.yearBuilt || '',
-        rentPrice: data.rentPrice || '',
-        dateAvailable: data.dateAvailable ? new Date(data.dateAvailable).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-        user: data.user || flats.user
+        yearBuilt: data.yearBuilt || "",
+        rentPrice: data.rentPrice || "",
+        dateAvailable: data.dateAvailable
+          ? new Date(data.dateAvailable).toISOString().slice(0, 10)
+          : new Date().toISOString().slice(0, 10),
+        user: data.user || flats.user,
       });
-      setError('');
+      setError("");
     } catch (error) {
-      console.error('Error fetching flat details:', error);
-      setError('Error fetching flat details');
+      console.error("Error fetching flat details:", error);
+      setError("Error fetching flat details");
     } finally {
       setLoading(false);
     }
@@ -94,53 +138,57 @@ export function FlatsScreen({ route }) {
         { value: flats.areaSize, label: "Area size" },
         { value: flats.yearBuilt, label: "Year built" },
         { value: flats.rentPrice, label: "Rent price" },
-        { value: flats.dateAvailable, label: "Date available" }
+        { value: flats.dateAvailable, label: "Date available" },
       ];
 
-      const isEmpty = requiredFields.some(field => field.value.trim() === '');
+      const isEmpty = requiredFields.some((field) => field.value.trim() === "");
       if (isEmpty) {
         setError("Complete all required fields");
         setLoading(false);
         return;
       }
-       
-      const url = isUpdate ? `${API_URLS.putUpdateFlats(userId)}` : API_URLS.postCreateFlat;
-       const method = isUpdate ? 'PUT' : 'POST';
-     
+
+      const url = isUpdate
+        ? `${API_URLS.putUpdateFlats(userId)}`
+        : API_URLS.postCreateFlat;
+      const method = isUpdate ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method: method,
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(flats)
+        body: JSON.stringify(flats),
       });
 
       if (!response.ok) {
         const responseData = await response.json();
-        setError(responseData.message || 'Error submitting the form');
+        setError(responseData.message || "Error submitting the form");
         setLoading(false);
         return;
       }
 
-      Alert.alert('Success', `Flat ${isUpdate ? 'updated' : 'created'} successfully`);
+      Alert.alert(
+        "Success",
+        `Flat ${isUpdate ? "updated" : "created"} successfully`
+      );
       if (!isUpdate) {
         setFlats({
-          city: '',
-          streetName: '',
-          streetNumber: '',
-          areaSize: '',
+          city: "",
+          streetName: "",
+          streetNumber: "",
+          areaSize: "",
           hasAc: false,
-          yearBuilt: '',
-          rentPrice: '',
+          yearBuilt: "",
+          rentPrice: "",
           dateAvailable: new Date().toISOString().slice(0, 10),
-          user: flats.user
+          user: flats.user,
         });
       }
-      setError('');
+      setError("");
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setError('Error submitting the form');
+      console.error("Error submitting form:", error);
+      setError("Error submitting the form");
     } finally {
       setLoading(false);
     }
@@ -152,12 +200,24 @@ export function FlatsScreen({ route }) {
 
       <View style={styles.inputGroup}>
         <Icon name="location-city" size={24} style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="City"
-          value={flats.city}
-          onChangeText={text => setFlats({ ...flats, city: text })}
-        />
+        <Picker
+          selectedValue={flats.city}
+          style={{
+            height: 40,
+            width: "100%",
+            backgroundColor: Theme.colors.background,
+            color: Theme.colors.text,
+          }}
+          onValueChange={(itemValue) => handleProvinceChange(itemValue)}
+        >
+          {provincias.map((item) => (
+            <Picker.Item
+              key={item.value}
+              label={item.label}
+              value={item.value}
+            />
+          ))}
+        </Picker>
       </View>
 
       <View style={styles.inputGroup}>
