@@ -5,8 +5,22 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import { styles } from './UserScreen.style';
 import { API_URLS } from '../../config/apiConfig';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export function UserScreen({ route }) {
+  const [localrol, setLocalRol] = useState('');
+  useEffect(() => {
+    const fetchRol = async () => {
+      try {
+        const rol = await AsyncStorage.getItem('rol');
+        setLocalRol(rol);
+      } catch (error) {
+        console.error('Error fetching rol:', error);
+      }
+    }
+    fetchRol();
+  }, []);
+
+    console.log('route', localrol);
     if (!route || !route.params || !route.params.type || !route.params.userId) {
         return (
             <View style={styles.container}>
@@ -14,6 +28,7 @@ export function UserScreen({ route }) {
             </View>
         );
     }
+    
 
     const currentDate = new Date();
     const [error, setError] = useState('');
@@ -45,7 +60,7 @@ export function UserScreen({ route }) {
                         email: userData.email || '',
                         birthdate: userData.birthdate ? new Date(userData.birthdate) : currentDate, // Aquí se corrige birthdate a userData.birthdate
                         confirmPassword: '',
-                        userType: userData.rol || 'Landors',
+                        userType: userData.rol || '',
                     });
     
                     setShowPasswordFields(userData.userType === 'Admin');
@@ -137,6 +152,9 @@ export function UserScreen({ route }) {
             const response = await axios.put(API_URLS.postCrearUsuario(route.params.userId), updateData);
 
             if (response.status === 200) {
+                 AsyncStorage.setItem('rol', user.userType);
+                 setLocalRol(user.userType);
+                 console.log('rol', localrol);
                 setError('User updated successfully.');
             } else {
                 console.error('Failed to update user:', response);
@@ -245,7 +263,9 @@ export function UserScreen({ route }) {
                         </View>
                     </>
                 )}
-                <View style={styles.optionsContainer}>
+             
+                <View style={styles.optionsContainer} pointerEvents={localrol === "Admin" ? "auto" : "none"}>
+        
                     <TouchableOpacity
                         style={[styles.optionButton, user.userType === 'Admin' && styles.selectedOption]}
                         onPress={() => handleOptionPress('Admin')}
@@ -280,9 +300,15 @@ export function UserScreen({ route }) {
                 </TouchableOpacity>
 
                 {error ? (
+                  error !== "User updated successfully." ? (
                     <View style={styles.errorContainer}>
-                        <Text style={styles.errorText}>{error}</Text>
+                      <Text style={styles.errorText}>{error}</Text>
                     </View>
+                  ) : (
+                    <View style={styles.sucessContainer}>
+                      <Text style={styles.successText}>{error}</Text>
+                    </View>
+                  )
                 ) : null}
             </View>
         </ScrollView>

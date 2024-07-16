@@ -27,7 +27,8 @@ export function MenuUser() {
   }, [navigation]); 
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate(screen.user.accounts,{ type: "edit", userId: storedUserId})}
@@ -42,7 +43,7 @@ export function MenuUser() {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate(screen.user.accounts, { type: "list", userId: ""})}
+        onPress={() => navigation.navigate(screen.user.list)}
       >
         <FontAwesome
           name="list"
@@ -62,31 +63,24 @@ export function MenuUser() {
         <Text style={styles.buttonText}>Salir</Text>
       </TouchableOpacity>
     </ScrollView>
+    </View>
   );
 }
 //initialParams={{ type: "favo", userId: ""}}
-
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    padding: 30,
-    backgroundColor: "#f0f0f0", // Fondo gris claro
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    paddingTop: 30,
+    backgroundColor: "#f0f0f0",
   },
   button: {
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
-    paddingVertical: 15,
+    justifyContent: "center",
+    paddingVertical: 12,
     paddingHorizontal: 20,
-    marginVertical: 10,
-    backgroundColor: "#5255ea", // Fondo morado
-    borderRadius: 8,
+    marginHorizontal: 10,
+    backgroundColor: "#6200ea",
+    borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -97,11 +91,41 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    color: "#fff", // Texto blanco
-    fontSize: 18,
+    color: "#fff",
+    fontSize: 16,
     marginLeft: 10,
+    fontWeight: "bold",
   },
   icon: {
     marginRight: 10,
+  },
+  sectionsContainer: {
+    paddingHorizontal: 10,
+    paddingTop: 20,
+  },
+  sectionContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 10,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  sectionImage: {
+    width: 150,
+    height: 100,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 10,
   },
 });

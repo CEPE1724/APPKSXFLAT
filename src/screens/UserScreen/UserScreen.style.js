@@ -63,6 +63,16 @@ export const styles = StyleSheet.create({
     errorText: {
         color: '#e63946', // Rojo oscuro
     },
+    successText: {
+        color: '#ffff', // Verde oscuro
+    },
+    sucessContainer: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#a8dadc', // Verde claro
+        borderRadius: 8,
+    },
+
     dialogContainer: {
         backgroundColor: '#fff', // Fondo blanco
         padding: 20,

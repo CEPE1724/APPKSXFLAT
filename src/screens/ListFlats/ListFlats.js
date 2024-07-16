@@ -174,7 +174,7 @@ const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
     >
       <Card>
         <View style={styles.headerContainer}>
-          <Text style={styles.flatName}>{item.city}</Text>
+          <Text style={styles.flatName}>{item.streetNumber}</Text>
           {userIdSet === item.user._id && (
             <View style={styles.userIconContainer}>
               <TouchableOpacity
