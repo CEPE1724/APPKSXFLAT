@@ -43,7 +43,7 @@ export function MenuUser() {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate(screen.user.list)}
+        onPress={() => navigation.navigate(screen.user.userlist)}
       >
         <FontAwesome
           name="list"

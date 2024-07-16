@@ -22,6 +22,7 @@ export const API_URLS = {
   getAllProvincia: `${API_BASE_URL}/provincias`,
   getAllCanton: (idProvincia) => `${API_BASE_URL}/cantones/${idProvincia}`,
   searchFlatsBySort: (sortBy) => `${API_BASE_URL}/searchFlats?sortBy=${sortBy}`,
+  listUser: `${API_BASE_URL}/users`,
 };
 
 //renders-landors-

@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { screen } from "../utils";
 import { UserScreen } from "../screens/UserScreen/UserScreen";
 import { MenuUser } from "../../src/screens/MenuUser";
-import { ListUser } from "../../src/screens/ListUser";
+import { UserList } from "../screens/UserList";
 const Stack = createNativeStackNavigator();
 
 export function AccountStack() {
@@ -24,9 +24,9 @@ export function AccountStack() {
       />
 
       <Stack.Screen
-        name={screen.user.list}
-        component={ListUser}
-        options={{ title: "Lista" }}
+        name={screen.user.userlist}
+        component={UserList}
+        options={{ title: "ListaUsuario" }}
       />
     </Stack.Navigator>
   );
