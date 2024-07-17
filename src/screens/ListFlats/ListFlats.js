@@ -37,17 +37,20 @@ export function ListFlats({ route }) {
         const storedUserId = await AsyncStorage.getItem("userId");
         if (storedUserId !== null) {
           setUserId(storedUserId);
+        } else {
+          console.log("No se encontró userId almacenado en AsyncStorage.");
+          // Aquí puedes manejar el caso de que no se encontró ningún valor almacenado
+          // Puedes optar por asignar un valor predeterminado o ejecutar alguna lógica alternativa.
         }
       } catch (error) {
-        console.error(
-          "Error fetching userId from AsyncStorage:",
-          error.message
-        );
+        console.error("Error fetching userId from AsyncStorage:", error.message);
+        // Manejar el error según sea necesario, como mostrar un mensaje al usuario o intentar de nuevo.
       }
     };
-
+  
     fetchUserId();
   }, []);
+  
 
   useEffect(() => {
     const fetchFlatsData = async () => {
@@ -55,7 +58,9 @@ export function ListFlats({ route }) {
         let Url = API_URLS.getTodosFlats;
         if (type === "favo") {
           Url = API_URLS.getFavoriteFlatsTodos(userId);
+          console.log("Url", Url);
         }
+        console.log("flastsss", Url);
         const response = await axios.get(Url, {
           timeout: 5000,
         });
@@ -80,9 +85,12 @@ export function ListFlats({ route }) {
   useEffect(() => {
     const getFavoriteStatus = async (flatId, userIdSet) => {
       try {
+        console.log("flatId", flatId, userIdSet);
+        console.log("apii",API_URLS.getFavoriteFlats(flatId, userIdSet));
         const response = await axios.get(
           API_URLS.getFavoriteFlats(flatId, userIdSet)
         );
+        
         if (response.data.search === "ok") {
           setFavorites((prevFavorites) => ({
             ...prevFavorites,

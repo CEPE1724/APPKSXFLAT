@@ -7,6 +7,9 @@ import { styles } from './UserScreen.style';
 import { API_URLS } from '../../config/apiConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export function UserScreen({ route }) {
+    const { type } = route.params;
+    const isEdit = type === 'edit' ? false : true;
+    
   const [localrol, setLocalRol] = useState('');
   useEffect(() => {
     const fetchRol = async () => {
@@ -212,11 +215,12 @@ export function UserScreen({ route }) {
                     <FontAwesome name="envelope" size={24} color="#333" style={styles.icon} />
                     <TextInput
                         style={styles.input}
+                        
                         placeholder="Email"
                         keyboardType="email-address"
                         value={user.email}
                         onChangeText={(text) => setUser({ ...user, email: text })}
-                        editable={true}
+                        editable={isEdit}
                     />
                 </View>
                 <TouchableOpacity onPress={showDatePickerModal} style={styles.inputContainer}>

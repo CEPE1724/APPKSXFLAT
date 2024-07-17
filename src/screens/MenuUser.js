@@ -1,4 +1,4 @@
-import React , { useEffect }from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,57 +12,68 @@ import { FontAwesome } from "@expo/vector-icons"; // Importa FontAwesome desde @
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export function MenuUser() {
   const navigation = useNavigation();
-  let storedUserId = "";
+  const [iUser, setIUser] = useState(0);
+  const [storedUserId, setStoredUserId] = useState(""); // Estado para el userId
+  const [storedUserType, setStoredUserType] = useState(""); // Estado para el rol del usuario
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-         storedUserId = await AsyncStorage.getItem("userId");
+        const userId = await AsyncStorage.getItem("userId");
+        const userType = await AsyncStorage.getItem("rol");
+        setStoredUserId(userId);
+        setStoredUserType(userType);
+
+        if (userType === "Admin") {
+          setIUser(1);
+        }
       } catch (error) {
-        console.error("Error fetching userId from AsyncStorage:", error.message);
+        console.error(
+          "Error fetching userId from AsyncStorage:",
+          error.message
+        );
         // Manejo de errores
       }
     };
 
     fetchUserId();
-  }, [navigation]); 
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate(screen.user.accounts,{ type: "edit", userId: storedUserId})}
-      >
-        <FontAwesome
-          name="list-alt"
-          size={24}
-          color="white"
-          style={styles.icon}
-        />
-        <Text style={styles.buttonText}>Update</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate(screen.user.userlist)}
-      >
-        <FontAwesome
-          name="list"
-          size={24}
-          color="white"
-          style={styles.icon}
-        />
-        <Text style={styles.buttonText}>Usuarios</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate(screen.flat.favoriteflats, { type: "favo", userId: storedUserId})
-        }
-      >
-        <FontAwesome name="user" size={24} color="white" style={styles.icon} />
-        <Text style={styles.buttonText}>Salir</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            navigation.navigate(screen.user.accounts, {
+              type: "edit",
+              userId: storedUserId,
+            })
+          }
+        >
+          <FontAwesome
+            name="list-alt"
+            size={24}
+            color="white"
+            style={styles.icon}
+          />
+          <Text style={styles.buttonText}>Update</Text>
+        </TouchableOpacity>
+        {iUser === 1 ? (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(screen.user.userlist)}
+          >
+            <FontAwesome
+              name="list"
+              size={24}
+              color="white"
+              style={styles.icon}
+            />
+            <Text style={styles.buttonText}>Usuarios</Text>
+          </TouchableOpacity>
+        ) : null}
+       
+      </ScrollView>
     </View>
   );
 }

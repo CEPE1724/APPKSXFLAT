@@ -22,8 +22,15 @@ const MessageStack = {
     view: "MessageView",
 }
 
+const Authstack = {
+    login: "Login",
+    register: "Register",
+}
+
 export const screen = {
     flat: flatStack,
     user: UserStack,
     message: MessageStack,
+    auth: Authstack,
+
 }

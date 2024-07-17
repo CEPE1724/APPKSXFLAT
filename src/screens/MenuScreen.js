@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView , FlatList, Image} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, Image } from "react-native";
 import { screen } from "../utils"; // Asegúrate de que la ruta sea correcta
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons"; // Importa FontAwesome desde @expo/vector-icons
@@ -7,7 +7,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function MenuScreen() {
   const navigation = useNavigation();
-  let storedUserId = "";
+  const [iUser, setIUser] = useState(0); // Estado para determinar si el usuario es Admin o Landors
+  const [storedUserId, setStoredUserId] = useState(""); // Estado para el userId
+  const [storedUserType, setStoredUserType] = useState(""); // Estado para el rol del usuario
 
   const sections = [
     { id: 1, title: "Sección 1", image: require("../../assets/Login.png") },
@@ -21,7 +23,15 @@ export function MenuScreen() {
   useEffect(() => {
     const fetchUserId = async () => {
       try {
-        storedUserId = await AsyncStorage.getItem("userId");
+        const userId = await AsyncStorage.getItem("userId");
+        const userType = await AsyncStorage.getItem("rol");
+        setStoredUserId(userId);
+        setStoredUserType(userType);
+
+        if (userType === "Admin" || userType === "Landors") {
+          setIUser(1);
+        }
+
       } catch (error) {
         console.error("Error fetching userId from AsyncStorage:", error.message);
         // Manejo de errores
@@ -29,7 +39,8 @@ export function MenuScreen() {
     };
 
     fetchUserId();
-  }, [navigation]);
+  }, [navigation]); // Dependencia de navegación para actualizar cuando la navegación cambia
+
   const renderSection = ({ item }) => (
     <TouchableOpacity
       style={styles.sectionContainer}
@@ -43,13 +54,16 @@ export function MenuScreen() {
   return (
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate(screen.flat.flats)}
-        >
-          <FontAwesome name="list-alt" size={24} color="white" style={styles.icon} />
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
+        {iUser === 1 ? (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate(screen.flat.flats)}
+          >
+            <FontAwesome name="list-alt" size={24} color="white" style={styles.icon} />
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+        ) : null}
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate(screen.flat.listflats)}

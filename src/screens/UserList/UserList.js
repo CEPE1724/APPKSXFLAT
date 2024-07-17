@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,72 +7,91 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  Modal,
+  TouchableHighlight,
 } from "react-native";
 import { Searchbar } from "react-native-paper";
 import { FontAwesome } from "@expo/vector-icons";
-
+import { useNavigation } from "@react-navigation/native";
 import { API_URLS } from "../../config/apiConfig";
 import Slider from "@react-native-community/slider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { screen } from "../../utils";
 export function UserList() {
+  const navigation = useNavigation();
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc"); // Nuevo estado para el orden
-  const [sortFavorites, setFavorites] = useState("asc"); // Nuevo estado para favoritos
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortFavorites, setFavorites] = useState("asc");
   const [loading, setLoading] = useState(false);
-  const [value, setValue] = useState(0); // Valor inicial
- 
-  const [maxValue, setMaxValue] = useState(0); // Nuevo estado para el valor máximo
-  const [minValue, setMinValue] = useState(0); // Nuevo estado para el valor mínimo
+  const [value, setValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
+  const [minValue, setMinValue] = useState(0);
   const [flatsCount, setFlatsCount] = useState(0);
 
+  // Nuevo estado para el modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [iUser, setIUser] = useState(0); // Estado para determinar si el usuario es Admin o Landors
+  const [storedUserId, setStoredUserId] = useState(""); // Estado para el userId
+  const [storedUserType, setStoredUserType] = useState(""); // Estado para el rol del usuario
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userId = await AsyncStorage.getItem("userId");
+        const userType = await AsyncStorage.getItem("rol");
+        setStoredUserId(userId);
+        setStoredUserType(userType);
+        console.log("userId:", userId);
+        console.log("userId:", userId);
+        console.log("userType:", storedUserId);
+        if (userType === "Admin" || userType === "Landors") {
+          setIUser(1);
+        }
+
+      } catch (error) {
+        console.error("Error fetching userId from AsyncStorage:", error.message);
+        // Manejo de errores
+      }
+    };
+    fetchUserId();
+  }, [navigation]); // Dependencia de navegación para actualizar cuando la navegación cambia
 
   const fetchFlatsCount = async () => {
     try {
-      const API_URL = API_URLS.getCountFlats; // Obtén la URL directamente desde la configuración
-      const response = await fetch(API_URL); // Realiza la solicitud usando la URL
-      
-      if (!response.ok) {
-        throw new Error('Error al obtener el contador de flats');
-      }
-  
-      const data = await response.json();
-      console.log("Contador de flats:", data);
-      const flatsCount = data.flatsCount;
-      console.log("Contador de flats:", flatsCount);
-      
-      // Asigna flatsCount al estado usando setFlatsCount
-      setFlatsCount(flatsCount);
-  
-      // Asigna flatsCount a maxValue
-      setMaxValue(flatsCount);
+      const API_URL = API_URLS.getCountFlats;
+      const response = await fetch(API_URL);
 
-      console.log("Valor máximo:", maxValue); // Solo para depuración o uso posterior
+      if (!response.ok) {
+        throw new Error("Error al obtener el contador de flats");
+      }
+
+      const data = await response.json();
+      const flatsCount = data.flatsCount;
+
+      setFlatsCount(flatsCount);
+      setMaxValue(flatsCount);
     } catch (error) {
-      console.error('Error en fetchFlatsCount:', error.message);
-      // Maneja el error según sea necesario (por ejemplo, mostrar un mensaje al usuario)
+      console.error("Error en fetchFlatsCount:", error.message);
     }
   };
-  
+
   useEffect(() => {
     fetchFlatsCount();
   }, []);
-  
-    
 
   const handleSliderChange = (newValue) => {
     setValue(newValue);
   };
+
   useEffect(() => {
     fetchUsers();
-  }, [sortOrder]); // Asegúrate de que fetchUsers se llame cuando cambie sortOrder
+  }, [sortOrder]);
 
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      console.log(
-        "Buscando usuarios...",
-        `${API_URLS.listUser}?searchTerm=${searchQuery}&sortOrder=${sortOrder}`
-      );
       const response = await fetch(
         `${API_URLS.listUser}?searchTerm=${searchQuery}&sortOrder=${sortOrder}`
       );
@@ -89,6 +108,10 @@ export function UserList() {
   };
 
   const handleDetailsPress = (user) => {
+ 
+      navigation.navigate(screen.user.accounts, { type: "edit", userId: user,
+      })
+   
     console.log("Ver detalles de:", user.firstName, user.lastName);
   };
 
@@ -101,23 +124,18 @@ export function UserList() {
   };
 
   const handleSortPress = () => {
-    // Cambiar el orden al contrario del estado actual
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
   };
 
   const handleSortFavorites = () => {
-    // Cambiar el orden a 'favorites' cuando se presiona el botón de favoritos
     const newSortOrder = sortOrder === "mostFlats" ? "favorites" : "mostFlats";
     setFavorites(newSortOrder);
-    console.log("Orden de favoritos:", sortFavorites);
     setSortOrder(newSortOrder);
   };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    // Al cambiar la consulta, llamamos a fetchUsers nuevamente
-    // para actualizar la lista filtrada y ordenada
     fetchUsers();
   };
 
@@ -127,8 +145,66 @@ export function UserList() {
       user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Función para mostrar el modal de confirmación de borrado
+  const handleDeleteConfirmation = (user) => {
+    console.log("Borrar usuario:", storedUserId, user._id);
+    if (storedUserId === user._id) {
+      alert("No puede borrar tu propio usuario");
+      return;
+    }
+    setUserToDelete(user);
+    setModalVisible(true);
+  };
+
+  // Función para confirmar el borrado del usuario
+  const handleDeleteUser = () => {
+    // Aquí puedes implementar la lógica para borrar al usuario
+    console.log("Borrando usuario:", storedUserId, userToDelete.lastName);
+
+    // Cierra el modal después de borrar
+    setModalVisible(false);
+  };
+
+  // Función para cancelar el borrado y cerrar el modal
+  const handleCancelDelete = () => {
+    setModalVisible(false);
+  };
+
   return (
     <ScrollView style={styles.container}>
+      {/* Modal para confirmar el borrado */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              ¿Estás seguro de que deseas borrar a {userToDelete?.email}{" "}
+              {userToDelete?.lastName}?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                onPress={handleDeleteUser}
+              >
+                <Text style={styles.textStyle}>Borrar</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: "#FF6347" }}
+                onPress={handleCancelDelete}
+              >
+                <Text style={styles.textStyle}>Cancelar</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.detailsContainer}>
         <Searchbar
           placeholder="Buscar por nombre..."
@@ -219,15 +295,21 @@ export function UserList() {
                       <Text style={styles.detailText}>{user.flatsCount}</Text>
                     </View>
                   </View>
-                  {user.rol === "admin" && (
+                  <View style={styles.detailsContainer}>
                     <TouchableOpacity
                       style={[styles.card__btn, styles.viewDetailsBtn]}
-                      onPress={() => handleDetailsPress(user)}
+                      onPress={() => handleDetailsPress(user._id)}
                     >
                       <FontAwesome name="eye" size={18} color="#fff" />
-                      <Text style={styles.card__btnText}>Ver Detalles</Text>
+                      <Text style={styles.card__btnText}></Text>
                     </TouchableOpacity>
-                  )}
+                    <TouchableOpacity
+                      style={[styles.card__btn, styles.viewDetailsBtnx]}
+                      onPress={() => handleDeleteConfirmation(user)}   >
+                      <FontAwesome name="close" size={18} color="white" />
+                      <Text style={styles.card__btnText}></Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}
@@ -338,10 +420,55 @@ const styles = StyleSheet.create({
   viewDetailsBtn: {
     backgroundColor: "#2d8c31",
   },
+  viewDetailsBtnx: {
+    backgroundColor: "red",
+  },
   searchBar: {
     flex: 1,
     marginHorizontal: 10,
     backgroundColor: "#f0f0f0",
     borderRadius: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 10,
+  },
+  openButton: {
+    backgroundColor: "#F194FF",
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
