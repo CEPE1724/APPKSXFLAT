@@ -12,6 +12,8 @@ const UserStack = {
     tab: "UserTab",
      menu: "Usuarios",
      accounts: "Account",
+     listuser: "List",
+     userlist: "UserList",
 }
 
 export const screen = {

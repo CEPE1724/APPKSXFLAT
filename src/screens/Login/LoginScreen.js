@@ -19,11 +19,13 @@ export function LoginScreen({ navigation, setIsLoggedIn }) {
             });
 
             const data = await response.json();
-
+            console.log(data);
             if (response.status === 200) {
                 // Guardar el token en el almacenamiento local
                 await AsyncStorage.setItem('token', data.token);
                 await AsyncStorage.setItem('userId', data.user._id);
+                await AsyncStorage.setItem('permission', data.user.permission);
+                await AsyncStorage.setItem('rol', data.user.rol);
                 console.log(data.user._id);
                // await AsyncStorage.setItem('userId', data._id);
 
