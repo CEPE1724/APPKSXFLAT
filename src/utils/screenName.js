@@ -16,7 +16,14 @@ const UserStack = {
      userlist: "UserList",
 }
 
+const MessageStack = {
+    tab: "MessageTab",
+    list: "MessageList",
+    view: "MessageView",
+}
+
 export const screen = {
     flat: flatStack,
     user: UserStack,
+    message: MessageStack,
 }

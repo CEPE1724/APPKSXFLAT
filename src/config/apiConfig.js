@@ -1,6 +1,6 @@
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
-const API_BASE_URL = "http://192.168.100.152:3000/api/v1"; // Usa tu IP local en lugar de localhost
+const API_BASE_URL = "http://192.168.2.127:3000/api/v1"; // Usa tu IP local en lugar de localhost
 //const API_BASE_URL = "http://172.16.30.159:3000/api/v1";
 export const API_URLS = {
   getValEmailExist: (email) => `${API_BASE_URL}/auth/validateExistEmail/${email}`,
@@ -23,6 +23,13 @@ export const API_URLS = {
   getAllCanton: (idProvincia) => `${API_BASE_URL}/cantones/${idProvincia}`,
   searchFlatsBySort: (sortBy) => `${API_BASE_URL}/searchFlats?sortBy=${sortBy}`,
   listUser: `${API_BASE_URL}/users`,
+  getCountFlats: `${API_BASE_URL}/flats/counters/user`,
+  getMEssage: (id) =>`${API_BASE_URL}/messages/flat/${id}`,
+  getMessageLista: (id,idFlat) => `${API_BASE_URL}/messages/user/${id}/flat/${idFlat}`,
+  getMessagesByParams: (idUsuarioRecibe, idUsuarioEnvia, idflat) => `${API_BASE_URL}/messages/message/${idUsuarioRecibe}/${idUsuarioEnvia}/${idflat}`,
+
+ 
+  
 };
 
 //renders-landors-

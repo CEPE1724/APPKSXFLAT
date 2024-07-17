@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FlatsStack } from '../navigation/FlatsStack';
+import { MessageStack } from '../navigation/MessageStack';
 import { LoginScreen } from '../screens/Login';
 import { AccountStack } from '../navigation/UserStack';
 import {screen} from '../utils';
@@ -23,6 +24,7 @@ function MainTabs() {
         >
             <Tab.Screen name={screen.flat.tab} component={FlatsStack} />
             <Tab.Screen name={screen.user.tab} component={AccountStack} />
+            <Tab.Screen name={screen.message.tab} component={MessageStack} />
         </Tab.Navigator>
     );
 }
@@ -36,6 +38,10 @@ function screenOptions(route, color, size) {
 
     if (route.name === screen.user.tab) {
         iconName = 'account';
+    }
+
+    if (route.name === screen.message.tab) {
+        iconName = 'email';
     }
 
     return <Icon type="material-community" name={iconName} color={color} size={size} />;

@@ -20,8 +20,44 @@ export function UserList() {
   const [sortFavorites, setFavorites] = useState("asc"); // Nuevo estado para favoritos
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(0); // Valor inicial
-  const minValue = 0; // Valor mínimo
-  const maxValue = 100; // Valor máximo
+ 
+  const [maxValue, setMaxValue] = useState(0); // Nuevo estado para el valor máximo
+  const [minValue, setMinValue] = useState(0); // Nuevo estado para el valor mínimo
+  const [flatsCount, setFlatsCount] = useState(0);
+
+
+  const fetchFlatsCount = async () => {
+    try {
+      const API_URL = API_URLS.getCountFlats; // Obtén la URL directamente desde la configuración
+      const response = await fetch(API_URL); // Realiza la solicitud usando la URL
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener el contador de flats');
+      }
+  
+      const data = await response.json();
+      console.log("Contador de flats:", data);
+      const flatsCount = data.flatsCount;
+      console.log("Contador de flats:", flatsCount);
+      
+      // Asigna flatsCount al estado usando setFlatsCount
+      setFlatsCount(flatsCount);
+  
+      // Asigna flatsCount a maxValue
+      setMaxValue(flatsCount);
+
+      console.log("Valor máximo:", maxValue); // Solo para depuración o uso posterior
+    } catch (error) {
+      console.error('Error en fetchFlatsCount:', error.message);
+      // Maneja el error según sea necesario (por ejemplo, mostrar un mensaje al usuario)
+    }
+  };
+  
+  useEffect(() => {
+    fetchFlatsCount();
+  }, []);
+  
+    
 
   const handleSliderChange = (newValue) => {
     setValue(newValue);
@@ -121,22 +157,6 @@ export function UserList() {
           />
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <Text style={styles.minMaxLabel}>
-          Mínimo: {minValue} - Máximo: {maxValue}
-        </Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={minValue}
-          maximumValue={maxValue}
-          value={value}
-          onValueChange={handleSliderChange}
-          minimumTrackTintColor="#2d8c31" // Color de la pista del slider
-          maximumTrackTintColor="#b0b0b0" // Color de la pista restante del slider
-          thumbTintColor="#2d8c31" // Color del pulgar del slider
-        />
-      </View>
-
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
