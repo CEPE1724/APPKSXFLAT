@@ -111,15 +111,15 @@ export function SignUpScreen({ navigation }) {
 
     return (
         <ImageBackground
-            source={require('../../../assets/LoginS.png')} // Reemplaza con tu imagen de fondo
+            source={require('../../../assets/montana.jpg')} // Reemplaza con tu imagen de fondo
             style={styles.background}
         >
             <View style={styles.container}>
                 <Image
-                    source={require('../../../assets/favicon.png')}  // Reemplaza con tu imagen de logo
+                    source={require('../../../assets/userRegister.png')}  // Reemplaza con tu imagen de logo
                     style={styles.logo}
                 />
-                <Text style={styles.title}>Regístrate con tus credenciales</Text>
+                <Text style={styles.title}>Register with your credentials</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
@@ -132,7 +132,7 @@ export function SignUpScreen({ navigation }) {
                     autoCapitalize="none"
                 />
                 {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-                {!isEmailValidated && <Button title="Validar Email" onPress={() => {
+                {!isEmailValidated && <Button color={'#8b0a50'} title="Validate Email" onPress={() => {
                     if (validateEmailFormat(email)) {
                         validateEmail(email);
                     } else {
@@ -169,7 +169,7 @@ export function SignUpScreen({ navigation }) {
                     </>
                 )}
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={styles.loginText}>¿Ya tienes una cuenta? Inicia sesión</Text>
+                    <Text style={styles.loginText}>¿Do you already have an account? Log in</Text>
                 </TouchableOpacity>
             </View>
 
