@@ -12,14 +12,20 @@ import { Searchbar } from "react-native-paper";
 import { FontAwesome } from "@expo/vector-icons";
 
 import { API_URLS } from "../../config/apiConfig";
-
+import Slider from "@react-native-community/slider";
 export function UserList() {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("asc"); // Nuevo estado para el orden
   const [sortFavorites, setFavorites] = useState("asc"); // Nuevo estado para favoritos
   const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState(0); // Valor inicial
+  const minValue = 0; // Valor mínimo
+  const maxValue = 100; // Valor máximo
 
+  const handleSliderChange = (newValue) => {
+    setValue(newValue);
+  };
   useEffect(() => {
     fetchUsers();
   }, [sortOrder]); // Asegúrate de que fetchUsers se llame cuando cambie sortOrder
@@ -27,6 +33,10 @@ export function UserList() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
+      console.log(
+        "Buscando usuarios...",
+        `${API_URLS.listUser}?searchTerm=${searchQuery}&sortOrder=${sortOrder}`
+      );
       const response = await fetch(
         `${API_URLS.listUser}?searchTerm=${searchQuery}&sortOrder=${sortOrder}`
       );
@@ -62,8 +72,9 @@ export function UserList() {
 
   const handleSortFavorites = () => {
     // Cambiar el orden a 'favorites' cuando se presiona el botón de favoritos
-    const newSortOrder = sortOrder === "favorites" ? "asc" : "favorites";
+    const newSortOrder = sortOrder === "mostFlats" ? "favorites" : "mostFlats";
     setFavorites(newSortOrder);
+    console.log("Orden de favoritos:", sortFavorites);
     setSortOrder(newSortOrder);
   };
 
@@ -90,11 +101,7 @@ export function UserList() {
           style={styles.searchBar}
         />
         <TouchableOpacity onPress={handleSortPress}>
-          <FontAwesome
-            name="user"
-            size={16}
-            color="#5c5c5c"
-          />
+          <FontAwesome name="user" size={16} color="#5c5c5c" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSortPress}>
           <FontAwesome
@@ -104,21 +111,32 @@ export function UserList() {
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSortFavorites}>
-          <FontAwesome
-            name="heart"
-            size={16}
-            color="#5c5c5c"
-          />
+          <FontAwesome name="heart" size={16} color="#5c5c5c" />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSortFavorites}>
           <FontAwesome
-            name={sortFavorites === "asc" ? "arrow-up" : "arrow-down"}
+            name={sortFavorites === "mostFlats" ? "arrow-down" : "arrow-up"}
             size={16}
             color="#5c5c5c"
           />
         </TouchableOpacity>
-        
       </View>
+      <View style={styles.container}>
+        <Text style={styles.minMaxLabel}>
+          Mínimo: {minValue} - Máximo: {maxValue}
+        </Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={minValue}
+          maximumValue={maxValue}
+          value={value}
+          onValueChange={handleSliderChange}
+          minimumTrackTintColor="#2d8c31" // Color de la pista del slider
+          maximumTrackTintColor="#b0b0b0" // Color de la pista restante del slider
+          thumbTintColor="#2d8c31" // Color del pulgar del slider
+        />
+      </View>
+
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
