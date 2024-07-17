@@ -1,6 +1,6 @@
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
-const API_BASE_URL = "http://192.168.1.5:3000/api/v1"; // Usa tu IP local en lugar de localhost
+const API_BASE_URL = "http://192.168.100.152:3000/api/v1"; // Usa tu IP local en lugar de localhost
 //const API_BASE_URL = "http://172.16.30.159:3000/api/v1";
 export const API_URLS = {
   getValEmailExist: (email) => `${API_BASE_URL}/auth/validateExistEmail/${email}`,

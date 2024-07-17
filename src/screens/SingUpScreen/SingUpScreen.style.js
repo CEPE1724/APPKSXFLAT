@@ -1,7 +1,6 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-
     background: {
         flex: 2,
         justifyContent: 'center',
@@ -16,14 +15,13 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
-          width: 0,
-          height: 2,
+            width: 0,
+            height: 2,
         },
         shadowOpacity: 2.25,
         shadowRadius: 6.84,
         elevation: 7,
-            transform: [{ translateY: -30 }], // Efecto de elevación
-          
+        transform: [{ translateY: -30 }], // Efecto de elevación
     },
     logo: {
         width: 100,
@@ -32,12 +30,11 @@ export const styles = StyleSheet.create({
     },
     title: {
         fontSize: 20,
-    marginBottom: 25,
-    textAlign: 'center',
-    color: '#2b2453',  
-    fontFamily: 'system-ui',
-    fontWeight: 100,// Verde oscuro de Banco Guayaquil
-   /*  fontWeight: 'bolder', */
+        marginBottom: 25,
+        textAlign: 'center',
+        color: '#2b2453',
+        //fontFamily: 'system-ui',
+        fontWeight: 'bold', // O 'normal' según lo que necesites
     },
     input: {
         height: 36,
@@ -95,4 +92,3 @@ export const styles = StyleSheet.create({
         marginTop: 2,
     },
 });
-
