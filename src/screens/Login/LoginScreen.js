@@ -57,12 +57,12 @@ export function LoginScreen({ navigation, setIsLoggedIn }) {
 
     return (
         <ImageBackground
-            source={require('../../../assets/LoginS.png')} // Reemplaza con tu imagen de fondo
+            source={require('../../../assets/montana.jpg')} // Reemplaza con tu imagen de fondo
             style={styles.background}
         >
             <View style={styles.container}>
                 <Image 
-                    source={require('../../../assets/favicon.png')}  // Reemplaza con la URL de tu imagen de logo
+                    source={require('../../../assets/iconoLogin2.png')}  // Reemplaza con la URL de tu imagen de logo
                     style={styles.logo}
                 />
                 <Text style={styles.title}>Login</Text>
@@ -81,13 +81,13 @@ export function LoginScreen({ navigation, setIsLoggedIn }) {
                     onChangeText={setPassword}
                     secureTextEntry
                 />
-                <Button title="Login" onPress={handleLogin} />
+                <Button color={'#8b0a50'} title="Login" onPress={handleLogin} />
                 {alert && <Text style={alert.type === 'success' ? styles.successText : styles.errorText}>{alert.message}</Text>}
                 <TouchableOpacity onPress={handleForgotPassword}>
-                    <Text style={styles.forgotPasswordText}>¿Olvidaste tu password?</Text>
+                    <Text style={styles.forgotPasswordText}>¿Forgot your password?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                    <Text style={styles.signUpText}>¿No tienes una cuenta? Regístrate</Text>
+                    <Text style={styles.signUpText}>¿You do not have an account? Sign up</Text>
                 </TouchableOpacity>
             </View>
         </ImageBackground>

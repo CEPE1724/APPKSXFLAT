@@ -3,16 +3,27 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
 
     background: {
-        flex: 1,
+        flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#E0E0E0',
     },
     container: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo semi-transparente
-        borderRadius: 10,
+        width: '90%',
+        padding: 40,
+        backgroundColor: 'rgba(240, 255, 240, 0.5)', // Fondo transparente
+        borderRadius: 50,
         alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 2.25,
+        shadowRadius: 6.84,
+        elevation: 7,
+            transform: [{ translateY: -30 }], // Efecto de elevación
+          
     },
     logo: {
         width: 100,
@@ -20,20 +31,23 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontSize: 14,
-        marginBottom: 20,
-        textAlign: 'center',
-        fontStyle: 'italic',
-        color: '#fff',
+        fontSize: 20,
+    marginBottom: 25,
+    textAlign: 'center',
+    color: '#2b2453',  
+    fontFamily: 'system-ui',
+    fontWeight: 100,// Verde oscuro de Banco Guayaquil
+   /*  fontWeight: 'bolder', */
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 20,
-        paddingHorizontal: 10,
-        borderRadius: 5,
+        height: 36,
         width: '100%',
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        borderWidth: 4,
+        borderColor: '#2b2453', // Borde gris claro
+        borderRadius: 10,
+        backgroundColor: '#E0E0E0', // Fondo gris claro
     },
     inputPassword: {
         flex: 1,
@@ -51,12 +65,12 @@ export const styles = StyleSheet.create({
         position: 'relative',
     },
     loginText: {
-        color: '#91a150',
-        fontSize: 14,
+        color: '#2b2453',
+        fontSize: 16,
         marginTop: 10,
     },
     errorText: {
-        color: 'red',
+        color: '#8b0a50',
         marginBottom: 10,
     },
     toggleButton: {
