@@ -6,19 +6,19 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
-  Modal,
-  Linking, // Importa Linking para abrir URLs externas
+  Linking,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import axios from "axios";
 import * as Animatable from "react-native-animatable";
-import { Avatar, Card, Icon } from "react-native-elements";
+import { Card, Icon } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { screen } from "../../utils";
 import { styles } from "./ListFlats.style";
 import { API_URLS } from "../../config/apiConfig";
-import MessageCardModal from "../../component/MessageCardModal"; // Importa el componente del modal
+import CustomModalWithLocation from "../../component/CustomModalWithLocation";
+import MessageCardModal from "../../component/MessageCardModal";
 
 export function ListFlats({ route }) {
   const { type, userId } = route.params;
@@ -28,8 +28,20 @@ export function ListFlats({ route }) {
   const [favorites, setFavorites] = useState({});
   const [loading, setLoading] = useState(true);
   const [userIdSet, setUserId] = useState("");
-  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
-  const [modalData, setModalData] = useState({}); // Estado para almacenar los datos del modal
+  const [modalVisibleLocation, setModalVisibleLocation] = useState(false);
+  const [modalVisibleMessage, setModalVisibleMessage] = useState(false);
+  const [modalData, setModalData] = useState({
+    latitude: null,
+    longitude: null,
+    city: "",
+    streetName: "",
+    avatar: "",
+    email: "",
+    streetNumber: "",
+    flatId: "",
+    userId: "",
+    storedUserId: "",
+  });
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -39,18 +51,14 @@ export function ListFlats({ route }) {
           setUserId(storedUserId);
         } else {
           console.log("No se encontró userId almacenado en AsyncStorage.");
-          // Aquí puedes manejar el caso de que no se encontró ningún valor almacenado
-          // Puedes optar por asignar un valor predeterminado o ejecutar alguna lógica alternativa.
         }
       } catch (error) {
         console.error("Error fetching userId from AsyncStorage:", error.message);
-        // Manejar el error según sea necesario, como mostrar un mensaje al usuario o intentar de nuevo.
       }
     };
-  
+
     fetchUserId();
   }, []);
-  
 
   useEffect(() => {
     const fetchFlatsData = async () => {
@@ -58,12 +66,8 @@ export function ListFlats({ route }) {
         let Url = API_URLS.getTodosFlats;
         if (type === "favo") {
           Url = API_URLS.getFavoriteFlatsTodos(userId);
-          console.log("Url", Url);
         }
-        console.log("flastsss", Url);
-        const response = await axios.get(Url, {
-          timeout: 5000,
-        });
+        const response = await axios.get(Url, { timeout: 5000 });
         setFlatsData(response.data);
 
         const initialFavorites = {};
@@ -85,12 +89,10 @@ export function ListFlats({ route }) {
   useEffect(() => {
     const getFavoriteStatus = async (flatId, userIdSet) => {
       try {
-        console.log("flatId", flatId, userIdSet);
-        console.log("apii",API_URLS.getFavoriteFlats(flatId, userIdSet));
         const response = await axios.get(
           API_URLS.getFavoriteFlats(flatId, userIdSet)
         );
-        
+
         if (response.data.search === "ok") {
           setFavorites((prevFavorites) => ({
             ...prevFavorites,
@@ -141,6 +143,16 @@ export function ListFlats({ route }) {
     }
   };
 
+  const toggleMaps = async (idFlats, idUsuario, latitude, longitude) => {
+    console.log("toggleMaps", idFlats, latitude, longitude);
+    setModalData({
+      ...modalData,
+      latitude: longitude ,
+      longitude: latitude,
+    });
+    setModalVisibleLocation(true);
+  };
+
   const openModal = (
     city,
     streetName,
@@ -151,28 +163,51 @@ export function ListFlats({ route }) {
     userId,
     storedUserId
   ) => {
-    console.log("city", storedUserId);
-    setModalData({ city, streetName, avatar, email, streetNumber, flatId, userId, storedUserId});
-    setModalVisible(true);
+    setModalData({
+      ...modalData,
+      city: city,
+      streetName: streetName,
+      avatar: avatar,
+      email: email,
+      streetNumber: streetNumber,
+      flatId: flatId,
+      userId: userId,
+      storedUserId: storedUserId,
+    });
+    setModalVisibleMessage(true);
   };
 
- 
+  const handleCloseModal = () => {
+    setModalVisibleLocation(false);
+    setModalVisibleMessage(false);
+    setModalData({
+      latitude: null,
+      longitude: null,
+      city: "",
+      streetName: "",
+      avatar: "",
+      email: "",
+      streetNumber: "",
+      flatId: "",
+      userId: "",
+      storedUserId: "",
+    });
+  };
 
-const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
-  const message = `Check out this flat in ${city} at ${streetName}, ${streetNumber}! Contact: ${email}`;
-  const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
+  const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
+    const message = `Check out this flat in ${city} at ${streetName}, ${streetNumber}! Contact: ${email}`;
+    const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
 
-  Linking.canOpenURL(url)
-    .then((supported) => {
-      if (!supported) {
-        console.log("WhatsApp is not installed");
-      } else {
-        return Linking.openURL(url);
-      }
-    })
-    .catch((error) => console.error("Error opening WhatsApp:", error));
-};
-
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) {
+          console.log("WhatsApp is not installed");
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch((error) => console.error("Error opening WhatsApp:", error));
+  };
 
   const renderFlat = ({ item }) => (
     <Animatable.View
@@ -208,7 +243,27 @@ const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => shareViaWhatsApp(item.user.email, item.city, item.streetName, item.streetNumber)}
+            onPress={() =>
+              toggleMaps(
+                item._id,
+                userIdSet,
+                item.city,
+                item.canton
+              )
+            }
+            style={styles.heartIconContainer}
+          >
+            <FontAwesome name={"map-marker"} size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              shareViaWhatsApp(
+                item.user.email,
+                item.city,
+                item.streetName,
+                item.streetNumber
+              )
+            }
             style={styles.whatsappIconContainer}
           >
             <FontAwesome name="whatsapp" size={24} color="green" />
@@ -254,10 +309,8 @@ const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
                   item.streetNumber,
                   item._id,
                   item.user._id,
-                  userIdSet,
-                  
+                  userIdSet
                 )
-   
               }
             >
               <FontAwesome name="envelope" size={24} color="black" />
@@ -288,18 +341,30 @@ const shareViaWhatsApp = (email, city, streetName, streetNumber) => {
         renderItem={renderFlat}
         keyExtractor={(item) => item._id}
       />
-      <MessageCardModal
-        visible={modalVisible}
-        message={`${modalData.email}!`}
-        avatar={modalData.avatar}
-        city={modalData.city}
-        streetName={modalData.streetName}
-        streetNumber={modalData.streetNumber}
-        flatId={modalData.flatId}
-        userId={modalData.userId}
-        storedUserId={modalData.storedUserId}
-        onClose={() => setModalVisible(false)} // Función para cerrar el modal
-      />
+
+      {modalVisibleLocation && (
+        <CustomModalWithLocation
+          visible={modalVisibleLocation}
+          onClose={handleCloseModal}
+          latitude={modalData.latitude}
+          longitude={modalData.longitude}
+        />
+      )}
+
+      {modalVisibleMessage && (
+        <MessageCardModal
+          visible={modalVisibleMessage}
+          message={`${modalData.email}!`}
+          avatar={modalData.avatar}
+          city={modalData.city}
+          streetName={modalData.streetName}
+          streetNumber={modalData.streetNumber}
+          flatId={modalData.flatId}
+          userId={modalData.userId}
+          storedUserId={modalData.storedUserId}
+          onClose={handleCloseModal}
+        />
+      )}
     </View>
   );
 }

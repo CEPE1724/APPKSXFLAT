@@ -160,6 +160,7 @@ export function UserList() {
   const handleDeleteUser = () => {
     // Aquí puedes implementar la lógica para borrar al usuario
     console.log("Borrando usuario:", storedUserId, userToDelete.lastName);
+    
 
     // Cierra el modal después de borrar
     setModalVisible(false);
