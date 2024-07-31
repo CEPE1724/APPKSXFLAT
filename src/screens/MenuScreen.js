@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, Modal, TouchableWithoutFeedback, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView, Image, Modal, TouchableWithoutFeedback, ImageBackground } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -71,45 +71,46 @@ export function MenuScreen() {
       resizeMode="cover"
     >
       <View style={styles.container}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.buttonContainer}>
           {iUser === 1 ? (
             <Surface style={styles.surface}>
               <Button
                 mode="contained"
-                icon={() => <FontAwesome name="list-alt" size={24} color="white" />}
+                icon={() => <FontAwesome name="file" size={24} color="white" />}
                 onPress={() => navigation.navigate(screen.flat.flats)}
                 style={styles.button}
                 labelStyle={styles.buttonText}
-              >
-                Edit
+              > 
               </Button>
             </Surface>
           ) : null}
           <Surface style={styles.surface}>
             <Button
               mode="contained"
-              icon={() => <FontAwesome name="building" size={24} color="white" />}
+              icon={() => <FontAwesome name="list" size={24} color="white" />}
               onPress={() => navigation.navigate(screen.flat.listflats)}
               style={styles.button}
               labelStyle={styles.buttonText}
             >
-              Flats
+              
             </Button>
           </Surface>
           <Surface style={styles.surface}>
             <Button
               mode="contained"
-              icon={() => <FontAwesome name="cog" size={24} color="white" />}
+              icon={() => <FontAwesome name="heart" size={24} color="white" />}
               onPress={() =>
                 navigation.navigate(screen.flat.favoriteflats, { type: "favo", userId: storedUserId })
               }
               style={styles.button}
               labelStyle={styles.buttonText}
             >
-              Favoritos
+              
             </Button>
           </Surface>
         </View>
+      </ScrollView>
         <Text style={styles.title}>DESTINOS TURISTICOS</Text>
         <FlatList
           data={sections}
@@ -146,26 +147,38 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
   },
+  buttonScrollContainer: {
+    // Asegura que el contenedor del ScrollView tenga el ancho completo
+    width: '100%',
+  },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 20,
+    justifyContent: "flex-start", // Alinea los botones al inicio del ScrollView
+    marginHorizontal: 10,
+    marginBottom: 20, // Añade margen inferior para separar los botones de la lista
   },
   surface: {
     marginHorizontal: 10,
-    borderRadius: 30,
+    borderRadius: 25, // Ajusta el borderRadius
     elevation: 5,
+    paddingVertical: 0, // Asegúrate de que el padding vertical sea adecuado
   },
   button: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 30,
+    paddingVertical: 12, // Aumenta el padding vertical para dar más espacio
+    paddingHorizontal: 20, // Aumenta el padding horizontal
+    backgroundColor: "#6200ea",
+    borderRadius: 25, // Ajusta el borderRadius para un botón más grande
+    shadowColor: "#000",
+    
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 18, // Ajusta el tamaño de la fuente
     fontWeight: "bold",
   },
   title: {
