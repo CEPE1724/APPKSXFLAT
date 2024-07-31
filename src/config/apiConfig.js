@@ -1,7 +1,10 @@
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 
-const API_BASE_URL = "http://192.168.2.124:3000/api/v1"; // Usa tu IP local en lugar de localhost
+const API_BASE_URL = "http://192.168.56.1:3000/api/v1"; // Usa tu IP local en lugar de localhost
+
+
+
 //const API_BASE_URL = "http://172.16.30.159:3000/api/v1";
 //const API_BASE_URL = "https://53c7-179-49-21-45.ngrok-free.app"; // Usa tu IP local en lugar de localhost
 
