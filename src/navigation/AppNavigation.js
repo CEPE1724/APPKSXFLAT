@@ -25,6 +25,11 @@ function MainTabs() {
       <Tab.Screen name={screen.flat.tab} component={FlatsStack} />
       <Tab.Screen name={screen.user.tab} component={AccountStack} />
       <Tab.Screen name={screen.message.tab} component={MessageStack} />
+      <Tab.Screen
+        name={screen.auth.login}
+        component={LoginScreen}
+        options={{ tabBarStyle: { display: 'none' } }}
+      />
     </Tab.Navigator>
   );
 }
@@ -42,6 +47,9 @@ function screenOptions(route, color, size) {
 
   if (route.name === screen.message.tab) {
     iconName = "email";
+  }
+  if (route.name === screen.auth.login) {
+    iconName = "login";
   }
 
   return (

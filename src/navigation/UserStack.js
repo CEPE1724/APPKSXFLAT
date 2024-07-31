@@ -26,7 +26,7 @@ export function AccountStack() {
           title: "Usuario",
           headerRight: () => (
             <TouchableOpacity onPress={toggleMenu} style={styles.iconContainer}>
-                <FontAwesome name="user-circle" size={24} color="black" style={styles.icon} />
+                <FontAwesome name="user-circle" size={0} color="black" style={styles.icon} />
               </TouchableOpacity>
           ),
         }}
@@ -46,11 +46,11 @@ export function AccountStack() {
         options={{ title: "ListaUsuario" }}
       />
     </Stack.Navigator>
-    <CustomMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
+   
   </Provider>
   );
 }
-
+// <CustomMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
 
 const styles = StyleSheet.create({
   iconContainer: {
