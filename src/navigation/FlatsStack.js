@@ -26,7 +26,7 @@ export function FlatsStack() {
             title: "Flats",
             headerRight: () => (
               <TouchableOpacity onPress={toggleMenu} style={styles.iconContainer}>
-                <FontAwesome name="user-circle" size={24} color="black" style={styles.icon} />
+                <FontAwesome name="user-circle" size={0} color="black" style={styles.icon} />
               </TouchableOpacity>
             ),
           }} // Aquí defines el título que debe mostrarse en la pantalla
@@ -57,11 +57,11 @@ export function FlatsStack() {
           initialParams={{ type: "favo", userId: "" }}
         />
       </Stack.Navigator>
-      <CustomMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
+     
     </Provider>
   );
 }
-
+// <CustomMenu menuVisible={menuVisible} toggleMenu={toggleMenu} />
 const styles = StyleSheet.create({
   iconContainer: {
     marginRight: 20,
