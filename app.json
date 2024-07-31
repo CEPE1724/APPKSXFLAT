@@ -18,10 +18,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.cepe1724.AppKsxFlat"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7aff7462-f65f-4a5c-9829-de8c5bfa4d23"
+      }
+    },
+    "owner": "cepe1724",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7aff7462-f65f-4a5c-9829-de8c5bfa4d23"
     }
   }
 }
