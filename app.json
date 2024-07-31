@@ -28,13 +28,6 @@
       "eas": {
         "projectId": "7aff7462-f65f-4a5c-9829-de8c5bfa4d23"
       }
-    },
-    "owner": "cepe1724",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/7aff7462-f65f-4a5c-9829-de8c5bfa4d23"
     }
   }
 }
